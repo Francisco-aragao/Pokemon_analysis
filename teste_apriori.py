@@ -6,6 +6,7 @@ df = pd.read_csv('./Data/tournaments.csv')
 df.replace(np.nan, 0, inplace=True)
 
 df = df[df['region_tournament'] != 0]
+
 # eliminando cartas do tipo treinador
 df = df[df['type_card'] != 'Trainer']
 regions = df['region_tournament'].unique()
@@ -40,6 +41,7 @@ for region in regions:
     frequent_itemsets = apriori(df_jogadores_cartas, min_support=0.2, use_colnames=True)
     frequent_itemsets.sort_values(by='support', ascending=False, inplace=True)
     rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=0.5)
+    rules = rules.sort_values(by='lift', ascending=False).drop(['antecedent support', 'consequent support', 'leverage', 'conviction', 'zhangs_metric'], axis=1)
     print(f"Total de jogadores: {quantidade_jogadores}")
     print(frequent_itemsets)
     print(rules)
