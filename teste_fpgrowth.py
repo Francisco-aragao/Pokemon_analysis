@@ -3,9 +3,7 @@ import pandas as pd
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 
 df = pd.read_csv('./Data/tournaments.csv')
-df.replace(np.nan, 0, inplace=True)
-
-df = df[df['region_tournament'] != 0]
+df = df[df['region_tournament'].notna()]
 
 # eliminando cartas do tipo treinador
 df = df[df['type_card'] != 'Trainer']
@@ -14,14 +12,14 @@ regions = df['region_tournament'].unique()
 # Agrupando cartas de cada deck no dataset
 def agrupa_deck_cartas(df_region):
     #filtra torneios da regiao
-    torneios = df_region['name_tournament'].unique()
+    torneios = df_region['id_tournament'].unique()
 
     lista_decks = []
     for torneio in torneios:
-        df_torneio = df_region[df_region['name_tournament'] == torneio]
-        jogadores = df_torneio['name_player'].unique()
+        df_torneio = df_region[df_region['id_tournament'] == torneio]
+        jogadores = df_torneio['id_player'].unique()
         for jogador in jogadores:
-            df_jogador = df_torneio[df_torneio['name_player'] == jogador]
+            df_jogador = df_torneio[df_torneio['id_player'] == jogador]
             cartas_jogador = df_jogador['name_card'].unique()
             lista_decks.append(cartas_jogador)
     return lista_decks
@@ -33,7 +31,6 @@ for region in regions:
 
     # Cria um dataframe que as colunas sao todas as cartas existentes no dataset
     cartas = df_region['name_card'].unique()
-    df_decks_cartas = pd.DataFrame(columns=cartas)
 
     # Lista para armazenar os dados dos decks
     data = []
