@@ -27,6 +27,10 @@ def agrupa_deck_cartas(df_region):
 for region in regions:
     print(f"region: {region}")
     df_region = df[(df['region_tournament'] == region) & (df['year_tournament'] == 2019)]
+
+    # elimina cartas que aparecem menos de 10 vezes
+    df_region = df_region.groupby('name_card').filter(lambda x: len(x) >= 10)
+
     lista_decks = agrupa_deck_cartas(df_region)
 
     # Cria um dataframe que as colunas sao todas as cartas existentes no dataset
